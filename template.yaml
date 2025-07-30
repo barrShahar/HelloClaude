@@ -45,7 +45,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
-      Handler: handlers.get_items.lambda_handler
+      Handler: src.handlers.get_items.lambda_handler
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref ItemsTable
@@ -60,7 +60,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
-      Handler: handlers.get_item.lambda_handler
+      Handler: src.handlers.get_item.lambda_handler
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref ItemsTable
@@ -75,7 +75,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
-      Handler: handlers.create_item.lambda_handler
+      Handler: src.handlers.create_item.lambda_handler
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ItemsTable
@@ -90,7 +90,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
-      Handler: handlers.update_item.lambda_handler
+      Handler: src.handlers.update_item.lambda_handler
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ItemsTable
@@ -105,7 +105,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./
-      Handler: handlers.delete_item.lambda_handler
+      Handler: src.handlers.delete_item.lambda_handler
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ItemsTable
