@@ -106,3 +106,4 @@ The frontend provides a clean web interface to:
 - Edit items inline with form validation
 - Handle errors and loading states gracefully# Pipeline test
 # Trigger pipeline after stack cleanup
+# Trigger rebuild with anthropic library
