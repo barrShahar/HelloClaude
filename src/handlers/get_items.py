@@ -1,7 +1,3 @@
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from utils import create_response, create_error_response, scan_all_items
 
 def lambda_handler(event, context):

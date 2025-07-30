@@ -1,9 +1,5 @@
-import sys
-import os
 import json
 from datetime import datetime
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 from utils import create_response, create_error_response, get_item_from_db, put_item_to_db
 
 def lambda_handler(event, context):
