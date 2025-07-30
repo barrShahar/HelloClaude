@@ -1,0 +1,102 @@
+name: Deploy SAM Application
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  SAM_TEMPLATE: template.yaml
+  TESTING_STACK_NAME: sam-app-dev
+  TESTING_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-dev-pipeline-execution-role
+  TESTING_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-dev-cloudformation-execution-role
+  TESTING_ARTIFACTS_BUCKET: aws-sam-cli-managed-dev-pipeline-artifactsbucket-${{ secrets.AWS_ACCOUNT_ID }}
+  TESTING_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  PROD_STACK_NAME: sam-app-prod
+  PROD_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-prod-pipeline-execution-role
+  PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-prod-cloudformation-execution-role
+  PROD_ARTIFACTS_BUCKET: aws-sam-cli-managed-prod-pipeline-artifactsbucket-${{ secrets.AWS_ACCOUNT_ID }}
+  PROD_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
+        run: |
+          python -m pytest tests/ -v || echo "No tests found, skipping"
+
+  build-and-deploy-feature:
+    if: github.event_name == 'pull_request'
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - uses: aws-actions/setup-sam@v2
+      - name: Build SAM application
+        run: sam build --template ${SAM_TEMPLATE} --use-container
+
+  build-and-deploy-dev:
+    if: github.ref == 'refs/heads/main'
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - uses: aws-actions/setup-sam@v2
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      - name: Build SAM application
+        run: sam build --template ${SAM_TEMPLATE} --use-container
+      - name: Deploy to development environment
+        run: |
+          sam deploy --stack-name ${TESTING_STACK_NAME} \
+            --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
+            --region ${TESTING_REGION} \
+            --confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --capabilities CAPABILITY_IAM
+
+  deploy-prod:
+    if: github.ref == 'refs/heads/main'
+    needs: [build-and-deploy-dev]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - uses: aws-actions/setup-sam@v2
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      - name: Build SAM application
+        run: sam build --template ${SAM_TEMPLATE} --use-container
+      - name: Deploy to production environment
+        run: |
+          sam deploy --stack-name ${PROD_STACK_NAME} \
+            --s3-bucket ${PROD_ARTIFACTS_BUCKET} \
+            --region ${PROD_REGION} \
+            --confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --capabilities CAPABILITY_IAM

@@ -1,0 +1,9 @@
+{
+  "body": "{\"name\": \"Sample Item\", \"description\": \"This is a sample item for testing\", \"tags\": [\"test\", \"sample\"]}",
+  "httpMethod": "POST",
+  "pathParameters": null,
+  "queryStringParameters": null,
+  "headers": {
+    "Content-Type": "application/json"
+  }
+}
