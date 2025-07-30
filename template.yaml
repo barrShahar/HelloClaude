@@ -44,7 +44,7 @@ Resources:
   GetItemsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
+      CodeUri: ./
       Handler: handlers.get_items.lambda_handler
       Policies:
         - DynamoDBReadPolicy:
@@ -59,7 +59,7 @@ Resources:
   GetItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
+      CodeUri: ./
       Handler: handlers.get_item.lambda_handler
       Policies:
         - DynamoDBReadPolicy:
@@ -74,7 +74,7 @@ Resources:
   CreateItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
+      CodeUri: ./
       Handler: handlers.create_item.lambda_handler
       Policies:
         - DynamoDBCrudPolicy:
@@ -89,7 +89,7 @@ Resources:
   UpdateItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
+      CodeUri: ./
       Handler: handlers.update_item.lambda_handler
       Policies:
         - DynamoDBCrudPolicy:
@@ -104,7 +104,7 @@ Resources:
   DeleteItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
+      CodeUri: ./
       Handler: handlers.delete_item.lambda_handler
       Policies:
         - DynamoDBCrudPolicy:
