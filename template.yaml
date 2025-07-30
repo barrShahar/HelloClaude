@@ -2,6 +2,12 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Simple CRUD API for DynamoDB with Lambda functions
 
+Parameters:
+  Environment:
+    Type: String
+    Default: prod
+    Description: Environment name for resource naming
+
 Globals:
   Function:
     Timeout: 30
@@ -15,7 +21,7 @@ Resources:
   ItemsTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ItemsTable
+      TableName: !Sub "ItemsTable-${Environment}"
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S

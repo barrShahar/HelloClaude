@@ -68,7 +68,8 @@ jobs:
             --region ${TESTING_REGION} \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset \
-            --capabilities CAPABILITY_IAM
+            --capabilities CAPABILITY_IAM \
+            --parameter-overrides Environment=dev
 
   deploy-prod:
     if: github.ref == 'refs/heads/main'
@@ -95,4 +96,5 @@ jobs:
             --region ${PROD_REGION} \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset \
-            --capabilities CAPABILITY_IAM
+            --capabilities CAPABILITY_IAM \
+            --parameter-overrides Environment=prod
