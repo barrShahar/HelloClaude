@@ -7,6 +7,10 @@ Parameters:
     Type: String
     Default: prod
     Description: Environment name for resource naming
+  AnthropicApiKey:
+    Type: String
+    NoEcho: true
+    Description: Anthropic API key for story generation
 
 Globals:
   Function:
@@ -15,6 +19,7 @@ Globals:
     Environment:
       Variables:
         TABLE_NAME: !Ref ItemsTable
+        ANTHROPIC_API_KEY: !Ref AnthropicApiKey
   Api:
     Cors:
       AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"

@@ -69,7 +69,7 @@ jobs:
             --no-confirm-changeset \
             --no-fail-on-empty-changeset \
             --capabilities CAPABILITY_IAM \
-            --parameter-overrides Environment=dev
+            --parameter-overrides Environment=dev AnthropicApiKey=${{ secrets.ANTHROPIC_API_KEY }}
 
   deploy-prod:
     if: github.ref == 'refs/heads/main'
@@ -97,4 +97,4 @@ jobs:
             --no-confirm-changeset \
             --no-fail-on-empty-changeset \
             --capabilities CAPABILITY_IAM \
-            --parameter-overrides Environment=prod
+            --parameter-overrides Environment=prod AnthropicApiKey=${{ secrets.ANTHROPIC_API_KEY }}

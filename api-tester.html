@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Tester - CRUD Operations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        h2 {
+            color: #666;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .api-selector {
+            margin-bottom: 20px;
+        }
+        select, input, textarea, button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            max-width: 400px;
+        }
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        .response {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+        .error {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .item-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #fff;
+        }
+        .item-card h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .item-card p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .item-actions {
+            margin-top: 10px;
+        }
+        .item-actions button {
+            margin-right: 5px;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        .tag {
+            background-color: #007bff;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 API Tester - CRUD Operations</h1>
+    
+    <div class="container">
+        <div class="api-selector">
+            <label for="apiUrl">Select API Environment:</label>
+            <select id="apiUrl">
+                <option value="https://q0mweqa4fe.execute-api.us-east-1.amazonaws.com/Prod/items">Development API</option>
+                <option value="https://9xngzdca34.execute-api.us-east-1.amazonaws.com/Prod/items">Production API</option>
+                <option value="https://27xlm2ilkc.execute-api.us-east-1.amazonaws.com/Prod/items">Original API</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- GET ALL ITEMS -->
+    <div class="container">
+        <h2>📋 Get All Items</h2>
+        <button onclick="getAllItems()">Get All Items</button>
+        <div id="getAllResponse" class="response"></div>
+        <div id="itemsGrid" class="items-grid"></div>
+    </div>
+
+    <!-- CREATE ITEM -->
+    <div class="container">
+        <h2>➕ Create New Item</h2>
+        <div class="form-group">
+            <label for="createName">Name (required):</label>
+            <input type="text" id="createName" placeholder="Enter item name">
+        </div>
+        <div class="form-group">
+            <label for="createDescription">Description:</label>
+            <textarea id="createDescription" placeholder="Enter item description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="createTags">Tags (comma-separated):</label>
+            <input type="text" id="createTags" placeholder="tag1, tag2, tag3">
+        </div>
+        <button onclick="createItem()">Create Item</button>
+        <div id="createResponse" class="response"></div>
+    </div>
+
+    <!-- GET SINGLE ITEM -->
+    <div class="container">
+        <h2>🔍 Get Single Item</h2>
+        <div class="form-group">
+            <label for="getItemId">Item ID:</label>
+            <input type="text" id="getItemId" placeholder="Enter item ID">
+        </div>
+        <button onclick="getItem()">Get Item</button>
+        <div id="getResponse" class="response"></div>
+    </div>
+
+    <!-- UPDATE ITEM -->
+    <div class="container">
+        <h2>✏️ Update Item</h2>
+        <div class="form-group">
+            <label for="updateItemId">Item ID:</label>
+            <input type="text" id="updateItemId" placeholder="Enter item ID">
+        </div>
+        <div class="form-group">
+            <label for="updateName">Name:</label>
+            <input type="text" id="updateName" placeholder="Enter new name">
+        </div>
+        <div class="form-group">
+            <label for="updateDescription">Description:</label>
+            <textarea id="updateDescription" placeholder="Enter new description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="updateTags">Tags (comma-separated):</label>
+            <input type="text" id="updateTags" placeholder="tag1, tag2, tag3">
+        </div>
+        <button onclick="updateItem()">Update Item</button>
+        <div id="updateResponse" class="response"></div>
+    </div>
+
+    <!-- DELETE ITEM -->
+    <div class="container">
+        <h2>🗑️ Delete Item</h2>
+        <div class="form-group">
+            <label for="deleteItemId">Item ID:</label>
+            <input type="text" id="deleteItemId" placeholder="Enter item ID">
+        </div>
+        <button class="delete-btn" onclick="deleteItem()">Delete Item</button>
+        <div id="deleteResponse" class="response"></div>
+    </div>
+
+    <script>
+        function getApiUrl() {
+            return document.getElementById('apiUrl').value;
+        }
+
+        function displayResponse(elementId, response, isError = false) {
+            const element = document.getElementById(elementId);
+            element.textContent = JSON.stringify(response, null, 2);
+            element.className = `response ${isError ? 'error' : 'success'}`;
+        }
+
+        function displayItems(items) {
+            const grid = document.getElementById('itemsGrid');
+            if (!items || items.length === 0) {
+                grid.innerHTML = '<p>No items found</p>';
+                return;
+            }
+
+            grid.innerHTML = items.map(item => `
+                <div class="item-card">
+                    <h4>${item.name}</h4>
+                    <p><strong>ID:</strong> ${item.id}</p>
+                    <p><strong>Description:</strong> ${item.description || 'No description'}</p>
+                    <p><strong>Created:</strong> ${new Date(item.created_at).toLocaleString()}</p>
+                    <p><strong>Updated:</strong> ${new Date(item.updated_at).toLocaleString()}</p>
+                    ${item.tags ? `<div class="tags">${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
+                    <div class="item-actions">
+                        <button onclick="populateGetForm('${item.id}')">Get</button>
+                        <button onclick="populateUpdateForm('${item.id}', '${item.name}', '${item.description || ''}', '${(item.tags || []).join(', ')}')">Edit</button>
+                        <button class="delete-btn" onclick="populateDeleteForm('${item.id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function populateGetForm(id) {
+            document.getElementById('getItemId').value = id;
+        }
+
+        function populateUpdateForm(id, name, description, tags) {
+            document.getElementById('updateItemId').value = id;
+            document.getElementById('updateName').value = name;
+            document.getElementById('updateDescription').value = description;
+            document.getElementById('updateTags').value = tags;
+        }
+
+        function populateDeleteForm(id) {
+            document.getElementById('deleteItemId').value = id;
+        }
+
+        async function getAllItems() {
+            try {
+                const response = await fetch(getApiUrl());
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    displayResponse('getAllResponse', data, true);
+                    return;
+                }
+                
+                displayResponse('getAllResponse', data);
+                displayItems(data.items);
+            } catch (error) {
+                displayResponse('getAllResponse', { error: error.message }, true);
+            }
+        }
+
+        async function createItem() {
+            const name = document.getElementById('createName').value;
+            const description = document.getElementById('createDescription').value;
+            const tagsInput = document.getElementById('createTags').value;
+            
+            if (!name.trim()) {
+                alert('Name is required');
+                return;
+            }
+
+            const tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+            
+            const payload = {
+                name: name.trim(),
+                description: description.trim(),
+                ...(tags.length > 0 && { tags })
+            };
+
+            try {
+                const response = await fetch(getApiUrl(), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                displayResponse('createResponse', data, !response.ok);
+                
+                if (response.ok) {
+                    // Clear form
+                    document.getElementById('createName').value = '';
+                    document.getElementById('createDescription').value = '';
+                    document.getElementById('createTags').value = '';
+                    // Refresh items list
+                    getAllItems();
+                }
+            } catch (error) {
+                displayResponse('createResponse', { error: error.message }, true);
+            }
+        }
+
+        async function getItem() {
+            const id = document.getElementById('getItemId').value;
+            
+            if (!id.trim()) {
+                alert('Item ID is required');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiUrl()}/${id.trim()}`);
+                const data = await response.json();
+                displayResponse('getResponse', data, !response.ok);
+            } catch (error) {
+                displayResponse('getResponse', { error: error.message }, true);
+            }
+        }
+
+        async function updateItem() {
+            const id = document.getElementById('updateItemId').value;
+            const name = document.getElementById('updateName').value;
+            const description = document.getElementById('updateDescription').value;
+            const tagsInput = document.getElementById('updateTags').value;
+            
+            if (!id.trim()) {
+                alert('Item ID is required');
+                return;
+            }
+
+            const payload = {};
+            if (name.trim()) payload.name = name.trim();
+            if (description.trim()) payload.description = description.trim();
+            if (tagsInput.trim()) {
+                payload.tags = tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag);
+            }
+
+            if (Object.keys(payload).length === 0) {
+                alert('At least one field must be provided for update');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiUrl()}/${id.trim()}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                displayResponse('updateResponse', data, !response.ok);
+                
+                if (response.ok) {
+                    // Refresh items list
+                    getAllItems();
+                }
+            } catch (error) {
+                displayResponse('updateResponse', { error: error.message }, true);
+            }
+        }
+
+        async function deleteItem() {
+            const id = document.getElementById('deleteItemId').value;
+            
+            if (!id.trim()) {
+                alert('Item ID is required');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to delete this item?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${getApiUrl()}/${id.trim()}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                displayResponse('deleteResponse', data, !response.ok);
+                
+                if (response.ok) {
+                    // Clear form
+                    document.getElementById('deleteItemId').value = '';
+                    // Refresh items list
+                    getAllItems();
+                }
+            } catch (error) {
+                displayResponse('deleteResponse', { error: error.message }, true);
+            }
+        }
+
+        // Load items on page load
+        window.onload = function() {
+            getAllItems();
+        };
+    </script>
+</body>
+</html>
