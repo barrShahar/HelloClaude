@@ -1,4 +1,4 @@
-from utils import create_response, create_error_response, scan_all_items
+from src.utils import create_response, create_error_response, scan_all_items
 
 def lambda_handler(event, context):
     try:

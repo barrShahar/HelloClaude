@@ -2,7 +2,7 @@ import json
 import uuid
 import os
 from datetime import datetime
-from utils import create_response, create_error_response, put_item_to_db
+from src.utils import create_response, create_error_response, put_item_to_db
 import anthropic
 
 def generate_story(name, description):

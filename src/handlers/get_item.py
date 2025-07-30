@@ -1,4 +1,4 @@
-from utils import create_response, create_error_response, get_item_from_db
+from src.utils import create_response, create_error_response, get_item_from_db
 
 def lambda_handler(event, context):
     try:
