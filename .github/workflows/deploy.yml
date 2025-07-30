@@ -8,15 +8,11 @@ on:
 
 env:
   SAM_TEMPLATE: template.yaml
-  TESTING_STACK_NAME: sam-app-dev
-  TESTING_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-dev-pipeline-execution-role
-  TESTING_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-dev-cloudformation-execution-role
-  TESTING_ARTIFACTS_BUCKET: aws-sam-cli-managed-dev-pipeline-artifactsbucket-${{ secrets.AWS_ACCOUNT_ID }}
+  TESTING_STACK_NAME: hello-claude-crud-api-dev
+  TESTING_ARTIFACTS_BUCKET: hello-claude-sam-deployment-1753857532
   TESTING_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-  PROD_STACK_NAME: sam-app-prod
-  PROD_PIPELINE_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-prod-pipeline-execution-role
-  PROD_CLOUDFORMATION_EXECUTION_ROLE: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/aws-sam-cli-managed-prod-cloudformation-execution-role
-  PROD_ARTIFACTS_BUCKET: aws-sam-cli-managed-prod-pipeline-artifactsbucket-${{ secrets.AWS_ACCOUNT_ID }}
+  PROD_STACK_NAME: hello-claude-crud-api-prod
+  PROD_ARTIFACTS_BUCKET: hello-claude-sam-deployment-1753857532
   PROD_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
 
 jobs:
@@ -72,7 +68,8 @@ jobs:
             --region ${TESTING_REGION} \
             --confirm-changeset \
             --no-fail-on-empty-changeset \
-            --capabilities CAPABILITY_IAM
+            --capabilities CAPABILITY_IAM \
+            --no-progressbar
 
   deploy-prod:
     if: github.ref == 'refs/heads/main'
@@ -99,4 +96,5 @@ jobs:
             --region ${PROD_REGION} \
             --confirm-changeset \
             --no-fail-on-empty-changeset \
-            --capabilities CAPABILITY_IAM
+            --capabilities CAPABILITY_IAM \
+            --no-progressbar
