@@ -15,6 +15,11 @@ Globals:
     Environment:
       Variables:
         TABLE_NAME: !Ref ItemsTable
+  Api:
+    Cors:
+      AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      AllowOrigin: "'*'"
 
 Resources:
   # DynamoDB Table
