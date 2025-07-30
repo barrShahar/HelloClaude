@@ -66,10 +66,9 @@ jobs:
           sam deploy --stack-name ${TESTING_STACK_NAME} \
             --s3-bucket ${TESTING_ARTIFACTS_BUCKET} \
             --region ${TESTING_REGION} \
-            --confirm-changeset \
+            --no-confirm-changeset \
             --no-fail-on-empty-changeset \
-            --capabilities CAPABILITY_IAM \
-            --no-progressbar
+            --capabilities CAPABILITY_IAM
 
   deploy-prod:
     if: github.ref == 'refs/heads/main'
@@ -94,7 +93,6 @@ jobs:
           sam deploy --stack-name ${PROD_STACK_NAME} \
             --s3-bucket ${PROD_ARTIFACTS_BUCKET} \
             --region ${PROD_REGION} \
-            --confirm-changeset \
+            --no-confirm-changeset \
             --no-fail-on-empty-changeset \
-            --capabilities CAPABILITY_IAM \
-            --no-progressbar
+            --capabilities CAPABILITY_IAM
